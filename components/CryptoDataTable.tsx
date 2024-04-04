@@ -31,7 +31,7 @@ function formatMarketCap(marketCap: number): string {
 
 const CryptoDataTable = ({ cryptoData }: Props) => {
   return (
-    <div className="w-full mt-5 bg-gray-900 text-white p-4 rounded-md sm:border">
+    <div className="w-full bg-gray-900 text-white p-4 rounded-md sm:border">
       <Table className="mx-auto">
         <TableHeader>
           <TableRow>

@@ -21,6 +21,16 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "models/CryptoList.js",
+    "app/api/createList/route.ts",
+    "utils/db.js",
+    "components/CustomList.tsx",
+    "app/api/getList/route.js"
+  ],
   "exclude": ["node_modules"]
 }
