@@ -2,7 +2,7 @@
 "use client";
 import React, { useState } from "react";
 const CustomList: React.FC = () => {
-  const [message, setMessage] = useState<any[]>([]); // Initialize message state as an empty array
+  const [list, setList] = useState<any[]>([]);
   const [listName, setListName] = useState<string>("");
   const [error, setError] = useState<string>("");
 
@@ -15,10 +15,10 @@ const CustomList: React.FC = () => {
       );
       if (filteredData.length === 0) {
         setError(`List with name "${listName}" not found. Please try again.`);
-        setMessage([]);
+        setList([]);
       } else {
         setError("");
-        setMessage(filteredData);
+        setList(filteredData);
         await updatePrices(filteredData);
       }
     } catch (error) {
@@ -46,7 +46,7 @@ const CustomList: React.FC = () => {
           return { ...item, price: priceData.data.rates.USD };
         })
       );
-      setMessage(updatedPrices);
+      setList(updatedPrices);
       setError("");
     } catch (error) {
       console.error("Error updating prices:", error);
@@ -66,7 +66,7 @@ const CustomList: React.FC = () => {
       });
 
       if (response.ok) {
-        setMessage((prevMessage) =>
+        setList((prevMessage) =>
           prevMessage.filter((msg) => msg._id !== item._id)
         );
       } else {
@@ -98,7 +98,7 @@ const CustomList: React.FC = () => {
       </div>
       {error && <div className="text-red-500 mb-4">{error}</div>}
       <ul>
-        {message.map((item, index) => (
+        {list.map((item, index) => (
           <li
             key={index}
             className="border border-gray-600 rounded p-2 mb-2 flex justify-between items-center"

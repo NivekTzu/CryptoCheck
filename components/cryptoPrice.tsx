@@ -52,7 +52,6 @@ function CryptoPrice() {
   };
 
   const handleSave = async () => {
-    7;
     try {
       const formattedPrices = prices.map((item) => ({
         listname: listName,

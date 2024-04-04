@@ -1,0 +1,12 @@
+import CryptoList from "../../../models/CryptoList";
+
+export async function GET(req) {
+  connectDB();
+  try {
+    const listNames = await CryptoList.findUniqueListNames();
+    return NextResponse.json(listNames, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching list names:", error);
+    return NextResponse.error(error.message, { status: 500 });
+  }
+}

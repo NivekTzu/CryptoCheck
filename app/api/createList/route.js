@@ -9,10 +9,18 @@ export async function POST(req) {
     const body = await req.json();
     const userData = body;
 
-    // Assuming userData is an array of objects with 'currency' and 'price' properties
     await Promise.all(
       userData.map(async (data) => {
-        await CryptoList.create(data);
+        // Check if a document with the same list name and currency already exists
+        const existingData = await CryptoList.findOne({
+          listname: data.listname,
+          currency: data.currency,
+        });
+
+        if (!existingData) {
+          // If not, create a new document
+          await CryptoList.create(data);
+        }
       })
     );
 
@@ -41,8 +49,6 @@ export async function DELETE(req) {
   let bodyreq = JSON.parse(passedValue);
 
   const id = bodyreq;
-
-  console.log(id);
 
   try {
     // Validate id as a valid ObjectId
