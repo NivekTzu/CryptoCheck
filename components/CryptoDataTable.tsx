@@ -35,29 +35,33 @@ const CryptoDataTable = ({ cryptoData }: Props) => {
       <Table className="mx-auto">
         <TableHeader>
           <TableRow>
-            <TableHead></TableHead>
-            <TableHead>Symbol</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Market Cap</TableHead>
-            <TableHead>24h Change</TableHead>
+            <TableHead className="px-3"></TableHead>
+            <TableHead className="px-3">Symbol</TableHead>
+            <TableHead className="px-3">Name</TableHead>
+            <TableHead className="px-3">Price</TableHead>
+            <TableHead className="px-3">Market Cap</TableHead>
+            <TableHead className="px-3">24h Change</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {cryptoData.map((crypto, index) => (
             <TableRow key={index}>
-              <TableCell>
+              <TableCell className="hidden md:table-cell py-2">
                 <img
                   src={crypto.icon}
                   alt={`${crypto.name} icon`}
                   className="w-8 h-8"
                 />
               </TableCell>
-              <TableCell>{crypto.symbol}</TableCell>
-              <TableCell>{crypto.name}</TableCell>
-              <TableCell>${crypto.price}</TableCell>
-              <TableCell>${formatMarketCap(crypto.marketCap)}</TableCell>
-              <TableCell>{crypto.change24h.toFixed(2)}%</TableCell>
+              <TableCell className="px-3 py-2">{crypto.symbol}</TableCell>
+              <TableCell className="px-3 py-2">{crypto.name}</TableCell>
+              <TableCell className="px-3 py-2">${crypto.price}</TableCell>
+              <TableCell className="px-3 py-2">
+                ${formatMarketCap(crypto.marketCap)}
+              </TableCell>
+              <TableCell className="px-0 py-2">
+                {crypto.change24h.toFixed(2)}%
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

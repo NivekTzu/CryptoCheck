@@ -23,9 +23,4 @@ const CryptoList: Model<CryptoListDocument> =
   mongoose.models.CryptoList ||
   mongoose.model<CryptoListDocument>("CryptoList", cryptoListSchema);
 
-cryptoListSchema.statics.findUniqueListNames = async function () {
-  const listNames = await this.distinct("listname");
-  return listNames;
-};
-
 export default CryptoList;

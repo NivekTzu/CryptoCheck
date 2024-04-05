@@ -27,10 +27,10 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "models/CryptoList.js",
-    "app/api/createList/route.ts",
+    "app/api/createList/route.js",
     "utils/db.js",
     "components/CustomList.tsx",
-    "app/api/getList/route.js"
+    "app/api/getListNames/route.js"
   ],
   "exclude": ["node_modules"]
 }

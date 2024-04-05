@@ -50,6 +50,8 @@ export async function DELETE(req) {
 
   const id = bodyreq;
 
+  console.log(id);
+
   try {
     // Validate id as a valid ObjectId
     if (!mongoose.Types.ObjectId.isValid(id)) {
