@@ -89,6 +89,11 @@ const CryptoPriceList: React.FC = () => {
     setCurrency("");
   };
 
+  const clearListClick = async () => {
+    setPrices([]);
+    setListName("");
+  };
+
   const handleFetchDataClick = async () => {
     try {
       const response = await fetch("/api/createList");
@@ -129,9 +134,6 @@ const CryptoPriceList: React.FC = () => {
         throw new Error("Failed to save prices");
       }
 
-      setPrices([]);
-      setListName("");
-
       if (!uniqueListNames.includes(listName)) {
         setUniqueListNames((prevListNames) => [...prevListNames, listName]);
       }
@@ -159,6 +161,7 @@ const CryptoPriceList: React.FC = () => {
         setPrices([]);
       } else {
         setError("");
+        updatePrices(filteredData);
         setPrices(filteredData);
       }
     } catch (error) {
@@ -224,44 +227,44 @@ const CryptoPriceList: React.FC = () => {
   return (
     <>
       <div className="w-full bg-gray-900 text-white p-2 rounded-md border">
-        <div className="">
+        <div className="mx-auto items-center">
           <input
             id="currencyInput"
             type="text"
             value={currency}
             onChange={(e) => setCurrency(e.target.value.toUpperCase())}
-            className="bg-gray-800 text-white rounded-md my-4 py-2 px-3 mb-4 w-1/3"
-            placeholder="Enter currency"
+            className="bg-gray-800 text-white rounded-md my-4 py-2 px-3 mb-4 w-1/5"
+            placeholder="Enter currency symbol (BTC)"
           />
 
           <button
             onClick={handleAddUpdateClick}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold  py-2 px-2 rounded ml-2"
           >
-            ADD CURRENCY
+            ADD to List
+          </button>
+
+          <select
+            id="listDropdown"
+            value={listName}
+            onChange={handleListNameChange}
+            className="bg-gray-800 text-white rounded-md py-2 px-3 mb-4 w-1/5"
+          >
+            <option value="">Select a list name</option>
+            {uniqueListNames.map((name, index) => (
+              <option key={index} value={name}>
+                {name}
+              </option>
+            ))}
+          </select>
+
+          <button
+            onClick={handleFetchDataClick}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold  py-2 px-4 rounded ml-2"
+          >
+            Refresh List
           </button>
         </div>
-
-        <select
-          id="listDropdown"
-          value={listName}
-          onChange={handleListNameChange}
-          className="bg-gray-800 text-white rounded-md py-2 px-3 mb-4 w-1/3"
-        >
-          <option value="">Select a list name</option>
-          {uniqueListNames.map((name, index) => (
-            <option key={index} value={name}>
-              {name}
-            </option>
-          ))}
-        </select>
-
-        <button
-          onClick={handleFetchDataClick}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold  py-2 px-4 rounded ml-2"
-        >
-          Update Values
-        </button>
 
         {error && <div className="text-red-500">{error}</div>}
         {prices.map((item, index) => (
@@ -295,6 +298,14 @@ const CryptoPriceList: React.FC = () => {
           className="bg-gray-800 text-white rounded-md mx-2 my-4 py-2 px-4 mb-4 w-1/3"
           placeholder="Enter List Name"
         />
+
+        <button
+          onClick={clearListClick}
+          className="bg-red-500 hover:bg-red-700 text-white font-bold ml-0 mr-2 py-2 px-2 rounded"
+          disabled={!listName || !prices.length}
+        >
+          Clear List
+        </button>
       </div>
     </>
   );
