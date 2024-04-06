@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import CryptoDataTable from "./CryptoDataTable"; // Assuming CryptoDataTable is defined elsewhere
+import CryptoDataTable from "../CryptoDataTable"; // Assuming CryptoDataTable is defined elsewhere
 
 type CryptoData = {
   name: string;
