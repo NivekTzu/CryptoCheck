@@ -29,7 +29,7 @@
     "models/CryptoList.js",
     "app/api/createList/route.js",
     "utils/db.js",
-    "components/CustomList.tsx",
+    "components/testComponents/CustomList.tsx",
     "app/api/getListNames/route.js"
   ],
   "exclude": ["node_modules"]

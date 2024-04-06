@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "./ui/select";
 import { Input } from "./ui/input";
+import { Plus, RefreshCcw } from "lucide-react";
 
 const CryptoPriceList: React.FC = () => {
   const [currency, setCurrency] = useState<string>("");
@@ -225,7 +226,7 @@ const CryptoPriceList: React.FC = () => {
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2"
           onClick={handleAddUpdateClick}
         >
-          ADD to List
+          <Plus />
         </Button>
       </div>
 
@@ -246,19 +247,25 @@ const CryptoPriceList: React.FC = () => {
             ))}
           </SelectContent>
         </Select>
+        <Button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2"
+          onClick={handleFetchDataClick}
+        >
+          <RefreshCcw />
+        </Button>
 
         <Button
           onClick={handleSave}
           disabled={!listName || !prices.length}
           className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2"
         >
-          Save to List
+          Save List
         </Button>
       </div>
 
       {error && <div>{error}</div>}
       {prices.map((item, index) => (
-        <div className="flex justify-between" key={index}>
+        <div className="flex justify-between py-1" key={index}>
           {item.currency} : ${item.price}
           <Button
             className="bg-red-500 hover:bg-red-700 text-white font-bold rounded"
@@ -278,12 +285,6 @@ const CryptoPriceList: React.FC = () => {
           onChange={handleChange}
           placeholder="Enter List Name"
         />
-        <Button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2"
-          onClick={handleFetchDataClick}
-        >
-          Refresh List
-        </Button>
 
         <Button
           className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2"
