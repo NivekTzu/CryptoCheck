@@ -34,15 +34,15 @@ const MarketData: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-900 text-white p-4 rounded-md border">
-      <div className="flex flex-col md:flex-row justify-center">
-        <div className="flex-1">
-          <p className="text-lg">
+    <div>
+      <div>
+        <div>
+          <p>
             Total Market Cap: $
             {formatMarketCap(marketData.total_market_cap?.usd || 0)}
           </p>
-          <p className="text-lg">
-            Bitcoin Dominance:{" "}
+          <p>
+            Bitcoin Dominance:
             {marketData.market_cap_percentage?.btc?.toFixed(2) || 0}%
           </p>
           {/* Add more market data here */}

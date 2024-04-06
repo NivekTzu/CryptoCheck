@@ -1,5 +1,14 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { Button } from "./ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { Input } from "./ui/input";
 
 const CryptoPriceList: React.FC = () => {
   const [currency, setCurrency] = useState<string>("");
@@ -63,27 +72,6 @@ const CryptoPriceList: React.FC = () => {
       }
     }
   };
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch("/api/createList");
-      const data = await response.json();
-      const filteredData = data.filter(
-        (item: { listname: string }) => item.listname === listName
-      );
-      if (filteredData.length === 0) {
-        setError(`List with name "${listName}" not found. Please try again.`);
-        setPrices([]);
-      } else {
-        setError("");
-        setPrices(filteredData);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setError("An error occurred while fetching data. Please try again.");
-    }
-  };
-
   const handleAddUpdateClick = async () => {
     fetchPrice();
     setCurrency("");
@@ -142,10 +130,7 @@ const CryptoPriceList: React.FC = () => {
     }
   };
 
-  const handleListNameChange = async (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const selectedListName = e.target.value;
+  const handleListNameChange = async (selectedListName: string) => {
     setListName(selectedListName);
 
     try {
@@ -226,86 +211,87 @@ const CryptoPriceList: React.FC = () => {
 
   return (
     <>
-      <div className="w-full bg-gray-900 text-white p-2 rounded-md border">
-        <div className="mx-auto items-center">
-          <input
-            id="currencyInput"
-            type="text"
-            value={currency}
-            onChange={(e) => setCurrency(e.target.value.toUpperCase())}
-            className="bg-gray-800 text-white rounded-md my-4 py-2 px-3 mb-4 w-1/5"
-            placeholder="Enter currency symbol (BTC)"
-          />
+      <div className="flex">
+        <Input
+          className="w-[250px]"
+          id="currencyInput"
+          type="text"
+          value={currency}
+          onChange={(e) => setCurrency(e.target.value.toUpperCase())}
+          placeholder="Enter currency symbol (BTC)"
+        />
 
-          <button
-            onClick={handleAddUpdateClick}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold  py-2 px-2 rounded ml-2"
-          >
-            ADD to List
-          </button>
-
-          <select
-            id="listDropdown"
-            value={listName}
-            onChange={handleListNameChange}
-            className="bg-gray-800 text-white rounded-md py-2 px-3 mb-4 w-1/5"
-          >
-            <option value="">Select a list name</option>
-            {uniqueListNames.map((name, index) => (
-              <option key={index} value={name}>
-                {name}
-              </option>
-            ))}
-          </select>
-
-          <button
-            onClick={handleFetchDataClick}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold  py-2 px-4 rounded ml-2"
-          >
-            Refresh List
-          </button>
-        </div>
-
-        {error && <div className="text-red-500">{error}</div>}
-        {prices.map((item, index) => (
-          <div key={index} className="flex items-center justify-between mb-2">
-            <div className="text-lg">
-              {item.currency} : ${item.price}
-            </div>
-            <button
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
-              onClick={() => handleRemove(item)}
-            >
-              Delete
-            </button>
-          </div>
-        ))}
-      </div>
-      <div className="w-full bg-gray-900 text-white p-2 rounded-md border">
-        <button
-          onClick={handleSave}
-          className="bg-green-500 hover:bg-green-700 text-white font-bold ml-0 mr-2 py-2 px-2 rounded"
-          disabled={!listName || !prices.length}
+        <Button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2"
+          onClick={handleAddUpdateClick}
         >
-          Save List
-        </button>
+          ADD to List
+        </Button>
+      </div>
 
-        <input
+      <div className="flex py-2">
+        <Select
+          key={listName}
+          onValueChange={handleListNameChange}
+          defaultValue={listName}
+        >
+          <SelectTrigger className="w-[250px]">
+            <SelectValue placeholder="Select List" />
+          </SelectTrigger>
+          <SelectContent>
+            {uniqueListNames.map((name, index) => (
+              <SelectItem key={index} value={name}>
+                {name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Button
+          onClick={handleSave}
+          disabled={!listName || !prices.length}
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2"
+        >
+          Save to List
+        </Button>
+      </div>
+
+      {error && <div>{error}</div>}
+      {prices.map((item, index) => (
+        <div className="flex justify-between" key={index}>
+          {item.currency} : ${item.price}
+          <Button
+            className="bg-red-500 hover:bg-red-700 text-white font-bold rounded"
+            onClick={() => handleRemove(item)}
+          >
+            Delete
+          </Button>
+        </div>
+      ))}
+
+      <div className="flex mt-4  ">
+        <Input
+          className="w-[250px]"
           id="newListInput"
           type="text"
           value={listName}
           onChange={handleChange}
-          className="bg-gray-800 text-white rounded-md mx-2 my-4 py-2 px-4 mb-4 w-1/3"
           placeholder="Enter List Name"
         />
+        <Button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2"
+          onClick={handleFetchDataClick}
+        >
+          Refresh List
+        </Button>
 
-        <button
+        <Button
+          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2"
           onClick={clearListClick}
-          className="bg-red-500 hover:bg-red-700 text-white font-bold ml-0 mr-2 py-2 px-2 rounded"
           disabled={!listName || !prices.length}
         >
           Clear List
-        </button>
+        </Button>
       </div>
     </>
   );

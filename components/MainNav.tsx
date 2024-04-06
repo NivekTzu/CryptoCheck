@@ -1,15 +1,20 @@
 import Link from "next/link";
+import ToggleMode from "./ToggleMode";
 
 const MainNav = () => {
   return (
-    <nav className="bg-gray-900 text-white p-4">
-      <div className="flex justify">
-        <Link href="/" passHref>
-          <div className="mr-4 cursor-pointer hover:underline">Custom</div>
-        </Link>
-        <Link href="/top" passHref>
-          <div className="cursor-pointer hover:underline">Top 100</div>
-        </Link>
+    <nav>
+      <div className="flex justify-between">
+        <div className="flex items-center gap-4">
+          <Link href="/">Create List</Link>
+          <Link href="/top">Top 100</Link>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <Link href="/">
+            <ToggleMode />
+          </Link>
+        </div>
       </div>
     </nav>
   );
