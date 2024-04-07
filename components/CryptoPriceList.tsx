@@ -23,6 +23,12 @@ const CryptoPriceList: React.FC = () => {
   useEffect(() => {
     const fetchListNames = async () => {
       try {
+        // Load uniqueListNames from localStorage
+        const storedListNames = localStorage.getItem("uniqueListNames");
+        if (storedListNames) {
+          setUniqueListNames(JSON.parse(storedListNames));
+        }
+
         const response = await fetch("/api/getListNames");
         const data = await response.json();
         setUniqueListNames(data);
@@ -125,6 +131,11 @@ const CryptoPriceList: React.FC = () => {
 
       if (!uniqueListNames.includes(listName)) {
         setUniqueListNames((prevListNames) => [...prevListNames, listName]);
+
+        localStorage.setItem(
+          "uniqueListNames",
+          JSON.stringify(uniqueListNames)
+        );
       }
 
       setListName(""); // Reset listName after saving
@@ -179,6 +190,10 @@ const CryptoPriceList: React.FC = () => {
       if (response.ok) {
         setPrices((prevMessage) =>
           prevMessage.filter((msg) => msg.currency !== item.currency)
+        );
+        localStorage.setItem(
+          "uniqueListNames",
+          JSON.stringify(uniqueListNames)
         );
       } else {
         setError("Failed to remove item. Please try again.");
