@@ -9,51 +9,64 @@ import {
   SelectValue,
 } from "./ui/select";
 import { Input } from "./ui/input";
-import { Plus, RefreshCcw } from "lucide-react";
 
-const CryptoPriceList: React.FC = () => {
-  const [currency, setCurrency] = useState<string>("");
+interface Props {
+  uniqueListNames: string[];
+  fetchListNames: () => Promise<void>;
+}
+
+const CryptoPriceList: React.FC<Props> = ({
+  uniqueListNames,
+  fetchListNames,
+}) => {
+  const [symbol, setSymbol] = useState<string>("");
   const [listName, setListName] = useState<string>("");
-  const [prices, setPrices] = useState<{ currency: string; price: number }[]>(
-    []
-  );
+  const [coinData, setCoinData] = useState<
+    { currency: string; price: number }[]
+  >([]);
   const [error, setError] = useState<string>("");
-  const [uniqueListNames, setUniqueListNames] = useState<string[]>([]);
 
-  useEffect(() => {
-    const fetchListNames = async () => {
-      try {
-        // Load uniqueListNames from localStorage
-        const storedListNames = localStorage.getItem("uniqueListNames");
-        if (storedListNames) {
-          setUniqueListNames(JSON.parse(storedListNames));
-        }
+  const handleListNameChange = async (selectedListName: string) => {
+    setListName(selectedListName);
 
-        const response = await fetch("/api/getListNames");
-        const data = await response.json();
-        setUniqueListNames(data);
-      } catch (error) {
-        console.error("Error fetching list names:", error);
+    try {
+      const response = await fetch("/api/createList");
+      const data = await response.json();
+      const filteredData = data.filter(
+        (item: { listname: string }) => item.listname === selectedListName
+      );
+      if (filteredData.length === 0) {
+        setError(
+          `List with name "${selectedListName}" not found. Please try again.`
+        );
+        setCoinData([]);
+      } else {
+        setError("");
+        updatePrices(filteredData);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError("An error occurred while fetching data. Please try again.");
+    }
 
+    // Call fetchListNames to update the list of names
     fetchListNames();
-  }, []);
+  };
 
   const fetchPrice = async () => {
-    if (currency) {
+    if (symbol) {
       try {
         const res = await fetch(
-          `https://api.coinbase.com/v2/exchange-rates?currency=${currency}`
+          `https://api.coinbase.com/v2/exchange-rates?currency=${symbol}`
         );
         const data = await res.json();
 
         if (data.data && data.data.rates && data.data.rates.USD) {
-          const existingIndex = prices.findIndex(
-            (item) => item.currency === currency
+          const existingIndex = coinData.findIndex(
+            (item) => item.currency === symbol
           );
           if (existingIndex !== -1) {
-            setPrices((prevPrices) => {
+            setCoinData((prevPrices) => {
               const updatedPrices = [...prevPrices];
               updatedPrices[existingIndex] = {
                 ...updatedPrices[existingIndex],
@@ -62,14 +75,14 @@ const CryptoPriceList: React.FC = () => {
               return updatedPrices;
             });
           } else {
-            setPrices((prevPrices) => [
+            setCoinData((prevPrices) => [
               ...prevPrices,
-              { currency, price: data.data.rates.USD },
+              { currency: symbol, price: data.data.rates.USD },
             ]);
           }
           setError("");
         } else {
-          setError(`Currency ${currency} not found.`);
+          setError(`Currency ${symbol} not found.`);
         }
       } catch (error) {
         console.error("Error fetching price data:", error);
@@ -81,37 +94,17 @@ const CryptoPriceList: React.FC = () => {
   };
   const handleAddUpdateClick = async () => {
     fetchPrice();
-    setCurrency("");
+    setSymbol("");
   };
 
   const clearListClick = async () => {
-    setPrices([]);
+    setCoinData([]);
     setListName("");
-  };
-
-  const handleFetchDataClick = async () => {
-    try {
-      const response = await fetch("/api/createList");
-      const data = await response.json();
-      const filteredData = data.filter(
-        (item: { listname: string }) => item.listname === listName
-      );
-      if (filteredData.length === 0) {
-        setError(`List with name "${listName}" not found. Please try again.`);
-        setPrices([]);
-      } else {
-        setError("");
-        updatePrices(filteredData);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setError("An error occurred while fetching data. Please try again.");
-    }
   };
 
   const handleSave = async () => {
     try {
-      const formattedPrices = prices.map((item) => ({
+      const formattedPrices = coinData.map((item) => ({
         listname: listName,
         currency: item.currency,
         price: item.price,
@@ -128,79 +121,8 @@ const CryptoPriceList: React.FC = () => {
       if (!res.ok) {
         throw new Error("Failed to save prices");
       }
-
-      if (!uniqueListNames.includes(listName)) {
-        setUniqueListNames((prevListNames) => [...prevListNames, listName]);
-
-        localStorage.setItem(
-          "uniqueListNames",
-          JSON.stringify(uniqueListNames)
-        );
-      }
-
-      setListName(""); // Reset listName after saving
     } catch (error) {
       console.error("Error saving prices:", error);
-    }
-  };
-
-  const handleListNameChange = async (selectedListName: string) => {
-    setListName(selectedListName);
-
-    try {
-      const response = await fetch("/api/createList");
-      const data = await response.json();
-      const filteredData = data.filter(
-        (item: { listname: string }) => item.listname === selectedListName
-      );
-      if (filteredData.length === 0) {
-        setError(
-          `List with name "${selectedListName}" not found. Please try again.`
-        );
-        setPrices([]);
-      } else {
-        setError("");
-        updatePrices(filteredData);
-        setPrices(filteredData);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setError("An error occurred while fetching data. Please try again.");
-    }
-    setUniqueListNames(uniqueListNames);
-  };
-
-  const handleRemove = async (item: any) => {
-    try {
-      if (!item._id) {
-        setPrices((prevMessage) =>
-          prevMessage.filter((msg) => msg.currency !== item.currency)
-        );
-        return;
-      }
-
-      const response = await fetch(`/api/createList`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(item._id),
-      });
-
-      if (response.ok) {
-        setPrices((prevMessage) =>
-          prevMessage.filter((msg) => msg.currency !== item.currency)
-        );
-        localStorage.setItem(
-          "uniqueListNames",
-          JSON.stringify(uniqueListNames)
-        );
-      } else {
-        setError("Failed to remove item. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error removing item:", error);
-      setError("An error occurred while removing item. Please try again.");
     }
   };
 
@@ -215,11 +137,34 @@ const CryptoPriceList: React.FC = () => {
           return { ...item, price: priceData.data.rates.USD };
         })
       );
-      setPrices(updatedPrices);
+      setCoinData(updatedPrices);
       setError("");
     } catch (error) {
       console.error("Error updating prices:", error);
       setError("An error occurred while updating prices. Please try again.");
+    }
+  };
+
+  const handleRemove = async (item: any) => {
+    try {
+      const response = await fetch(`/api/createList`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(item._id),
+      });
+
+      if (response.ok) {
+        setCoinData((prevMessage) =>
+          prevMessage.filter((msg) => msg.currency !== item.currency)
+        );
+      } else {
+        setError("Failed to remove item. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error removing item:", error);
+      setError("An error occurred while removing item. Please try again.");
     }
   };
 
@@ -234,8 +179,8 @@ const CryptoPriceList: React.FC = () => {
           className="w-[250px]"
           id="currencyInput"
           type="text"
-          value={currency}
-          onChange={(e) => setCurrency(e.target.value.toUpperCase())}
+          value={symbol}
+          onChange={(e) => setSymbol(e.target.value.toUpperCase())}
           placeholder="Enter currency symbol (BTC)"
         />
 
@@ -243,7 +188,7 @@ const CryptoPriceList: React.FC = () => {
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2"
           onClick={handleAddUpdateClick}
         >
-          <Plus />
+          ADD Coin
         </Button>
       </div>
 
@@ -264,34 +209,15 @@ const CryptoPriceList: React.FC = () => {
             ))}
           </SelectContent>
         </Select>
-        <Button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2"
-          onClick={handleFetchDataClick}
-        >
-          <RefreshCcw />
-        </Button>
 
         <Button
           onClick={handleSave}
-          disabled={!listName || !prices.length}
+          disabled={!listName || !coinData.length}
           className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2"
         >
           Save List
         </Button>
       </div>
-
-      {error && <div>{error}</div>}
-      {prices.map((item, index) => (
-        <div className="flex justify-between py-1" key={index}>
-          {item.currency} : ${item.price}
-          <Button
-            className="bg-red-500 hover:bg-red-700 text-white font-bold rounded"
-            onClick={() => handleRemove(item)}
-          >
-            Delete
-          </Button>
-        </div>
-      ))}
 
       <div className="flex mt-4  ">
         <Input
@@ -306,11 +232,24 @@ const CryptoPriceList: React.FC = () => {
         <Button
           className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2"
           onClick={clearListClick}
-          disabled={!listName || !prices.length}
+          disabled={!listName || !coinData.length}
         >
           Clear List
         </Button>
       </div>
+
+      {error && <div>{error}</div>}
+      {coinData.map((item, index) => (
+        <div className="flex justify-between py-1" key={index}>
+          {item.currency} : ${item.price}
+          <Button
+            className="bg-red-500 hover:bg-red-700 text-white font-bold rounded"
+            onClick={() => handleRemove(item)}
+          >
+            Delete
+          </Button>
+        </div>
+      ))}
     </>
   );
 };
