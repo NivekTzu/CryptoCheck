@@ -126,6 +126,8 @@ const CryptoPriceList: React.FC = () => {
       if (!uniqueListNames.includes(listName)) {
         setUniqueListNames((prevListNames) => [...prevListNames, listName]);
       }
+
+      setListName(""); // Reset listName after saving
     } catch (error) {
       console.error("Error saving prices:", error);
     }
