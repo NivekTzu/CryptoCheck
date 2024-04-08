@@ -16,6 +16,7 @@
     "axios": "^1.6.8",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "cors": "^2.8.5",
     "lucide-react": "^0.364.0",
     "mongodb": "^6.5.0",
     "mongoose": "^8.3.0",

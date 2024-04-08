@@ -156,6 +156,7 @@ const CryptoPriceList: React.FC<Props> = ({
       });
 
       if (response.ok) {
+        fetchListNames();
         setCoinData((prevMessage) =>
           prevMessage.filter((msg) => msg.currency !== item.currency)
         );
@@ -194,9 +195,9 @@ const CryptoPriceList: React.FC<Props> = ({
 
       <div className="flex py-2">
         <Select
-          key={listName}
           onValueChange={handleListNameChange}
           defaultValue={listName}
+          value={listName}
         >
           <SelectTrigger className="w-[250px]">
             <SelectValue placeholder="Select List" />
