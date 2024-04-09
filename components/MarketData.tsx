@@ -34,19 +34,15 @@ const MarketData: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="flex items- center gap-2">
       <div>
-        <div>
-          <p>
-            Total Market Cap: $
-            {formatMarketCap(marketData.total_market_cap?.usd || 0)}
-          </p>
-          <p>
-            Bitcoin Dominance:
-            {marketData.market_cap_percentage?.btc?.toFixed(2) || 0}%
-          </p>
-          {/* Add more market data here */}
-        </div>
+        Total Market Cap: $
+        {formatMarketCap(marketData.total_market_cap?.usd || 0)}
+        {/* Add more market data here */}
+      </div>
+      <div>
+        Bitcoin Dominance:
+        {marketData.market_cap_percentage?.btc?.toFixed(2) || 0}%
       </div>
     </div>
   );

@@ -31,35 +31,42 @@ function formatMarketCap(marketCap: number): string {
 
 const CryptoDataTable = ({ cryptoData }: Props) => {
   return (
-    <div className="w-full bg-gray-900 text-white p-4 rounded-md sm:border">
+    <div>
       <Table className="mx-auto">
         <TableHeader>
           <TableRow>
-            <TableHead className="px-3"></TableHead>
-            <TableHead className="px-3">Symbol</TableHead>
-            <TableHead className="px-3">Name</TableHead>
-            <TableHead className="px-3">Price</TableHead>
-            <TableHead className="px-3">Market Cap</TableHead>
-            <TableHead className="px-3">24h Change</TableHead>
+            <TableHead className=""></TableHead>
+            <TableHead className="">Symbol</TableHead>
+            <TableHead className="">Name</TableHead>
+            <TableHead className="">Price</TableHead>
+            <TableHead className="">Market Cap</TableHead>
+            <TableHead className="">24h Change</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {cryptoData.map((crypto, index) => (
             <TableRow key={index}>
-              <TableCell className="hidden md:table-cell py-2">
+              <TableCell>
                 <img
                   src={crypto.icon}
                   alt={`${crypto.name} icon`}
                   className="w-8 h-8"
                 />
               </TableCell>
-              <TableCell className="px-3 py-2">{crypto.symbol}</TableCell>
-              <TableCell className="px-3 py-2">{crypto.name}</TableCell>
-              <TableCell className="px-3 py-2">${crypto.price}</TableCell>
-              <TableCell className="px-3 py-2">
+              <TableCell>{crypto.symbol}</TableCell>
+              <TableCell className="">{crypto.name}</TableCell>
+              <TableCell className="text-xl font-bold">
+                ${crypto.price}
+              </TableCell>
+
+              <TableCell className="">
                 ${formatMarketCap(crypto.marketCap)}
               </TableCell>
-              <TableCell className="px-0 py-2">
+              <TableCell
+                className={
+                  crypto.change24h >= 0 ? "text-green-500" : "text-red-500"
+                }
+              >
                 {crypto.change24h.toFixed(2)}%
               </TableCell>
             </TableRow>

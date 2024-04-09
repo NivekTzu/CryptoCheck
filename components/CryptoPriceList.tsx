@@ -100,6 +100,7 @@ const CryptoPriceList: React.FC<Props> = ({
   };
 
   const handleSave = async () => {
+    updatePrices(coinData);
     try {
       const formattedPrices = coinData.map((item) => ({
         listname: listName,

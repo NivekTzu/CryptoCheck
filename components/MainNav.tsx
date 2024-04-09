@@ -6,14 +6,13 @@ const MainNav = () => {
     <nav>
       <div className="flex justify-between">
         <div className="flex items-center gap-4">
-          <Link href="/">Create List</Link>
-          <Link href="/top">Top 100</Link>
+          <Link href="/">HomePage</Link>
+          <Link href="/CreateNewList">Custom List</Link>
+          <Link href="/Top">Top 100</Link>
         </div>
 
         <div className="flex items-center gap-4">
-          <Link href="/">
-            <ToggleMode />
-          </Link>
+          <ToggleMode />
         </div>
       </div>
     </nav>
