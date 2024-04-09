@@ -48,9 +48,6 @@ const CryptoPriceList: React.FC<Props> = ({
       console.error("Error fetching data:", error);
       setError("An error occurred while fetching data. Please try again.");
     }
-
-    // Call fetchListNames to update the list of names
-    fetchListNames();
   };
 
   const fetchPrice = async () => {
@@ -117,6 +114,9 @@ const CryptoPriceList: React.FC<Props> = ({
           "Content-Type": "application/json",
         },
       });
+
+      // Call fetchListNames to update the list of names
+      fetchListNames();
 
       if (!res.ok) {
         throw new Error("Failed to save prices");

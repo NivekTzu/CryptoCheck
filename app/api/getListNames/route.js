@@ -7,13 +7,12 @@ export async function GET(req, res) {
 
   try {
     const listNames = await CryptoList.distinct("listname");
-    return NextResponse.json(listNames, {
-      status: 200,
-      headers: { "Cache-Control": "no-store" }, // Set Cache-Control header
-      revalidate: 0, // Disable ISR for this route
-    });
+    console.log("inside getListNames API", listNames);
+    return NextResponse.json(listNames);
   } catch (error) {
     console.error("Error fetching list names:", error);
     return NextResponse.error(error.message, { status: 500 });
   }
 }
+
+export const dynamic = "force-dynamic";
