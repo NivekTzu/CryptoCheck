@@ -8,7 +8,6 @@ const CreateNewList: React.FC = () => {
     try {
       const response = await fetch("/api/getListNames");
       const data = await response.json();
-      console.log(data);
       setUniqueListNames(data);
     } catch (error) {
       console.error("Error fetching list names:", error);

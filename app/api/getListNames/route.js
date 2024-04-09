@@ -7,7 +7,6 @@ export async function GET(req, res) {
 
   try {
     const listNames = await CryptoList.distinct("listname");
-    console.log("inside getListNames API", listNames);
     return NextResponse.json(listNames);
   } catch (error) {
     console.error("Error fetching list names:", error);
