@@ -15,10 +15,7 @@ interface Props {
   fetchListNames: () => Promise<void>;
 }
 
-const CryptoPriceList: React.FC<Props> = ({
-  uniqueListNames,
-  fetchListNames,
-}) => {
+const CryptoPriceList = ({ uniqueListNames, fetchListNames }: Props) => {
   const [symbol, setSymbol] = useState<string>("");
   const [listName, setListName] = useState<string>("");
   const [coinData, setCoinData] = useState<

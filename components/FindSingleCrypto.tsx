@@ -13,7 +13,7 @@ type CryptoData = {
   };
 };
 
-const FindSingleCrypto: React.FC<Props> = ({ symbol }) => {
+const FindSingleCrypto = ({ symbol }: Props) => {
   const [price, setPrice] = useState<string>("Loading...");
 
   React.useEffect(() => {

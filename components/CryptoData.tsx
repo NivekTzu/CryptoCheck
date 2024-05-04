@@ -12,7 +12,7 @@ type CryptoData = {
   total_volume: number;
 };
 
-const CryptoData: React.FC = () => {
+const CryptoData = () => {
   const [cryptoData, setCryptoData] = useState<CryptoData[]>([]);
 
   useEffect(() => {
